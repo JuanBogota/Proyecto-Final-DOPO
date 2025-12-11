@@ -16,6 +16,10 @@ bluej.pkg
 *.lock
 *.tmp
 
+# Eclipse
+.classpath
+.project
+
 #Carpeta doc que no se debe subir
 doc/
 bin/
