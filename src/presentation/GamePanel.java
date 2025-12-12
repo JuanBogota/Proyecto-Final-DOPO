@@ -20,10 +20,10 @@ import javax.swing.*;
  */
 public class GamePanel extends JPanel {
     private Level level;
-    private static final int CELL_SIZE = 32; // Tamaño de cada celda en pÃ­xeles
+    private static final int CELL_SIZE = 32; // Tamaño de cada celda en píxeles
     private Map<String, Color> colorMap;
     private BufferedImage startScreenImage;
-    private BadDopoCreamGUI mainWindow;
+    private MainWindow mainWindow;
     
     /**
      * Constructor del panel de juego
@@ -39,7 +39,7 @@ public class GamePanel extends JPanel {
     /**
      * Establece la ventana principal
      */
-    public void setMainWindow(BadDopoCreamGUI mainWindow) {
+    public void setMainWindow(MainWindow mainWindow) {
         this.mainWindow = mainWindow;
     }
     

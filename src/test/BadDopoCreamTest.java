@@ -7,10 +7,11 @@ import domain.*;
 
 /**
  * Pruebas unitarias para la clase BadDopoCream.
+ * Actualizado para arquitectura SOLID v3.0
  * 
  * @author Juan Daniel Bogotá Fuentes
  * @author Nicolás Felipe Bernal Gallo
- * @version 1.0
+ * @version 3.0
  */
 public class BadDopoCreamTest {
     
@@ -50,15 +51,113 @@ public class BadDopoCreamTest {
     }
     
     /**
-     * Prueba que el juego inicia correctamente
+     * Prueba que los niveles disponibles se inicializan correctamente
      */
     @Test
-    public void testStartGame() {
-        game.startGame(config);
+    public void testAvailableLevels() {
+        assertNotNull(game.getAvailableLevels());
+        assertEquals(3, game.getAvailableLevels().size());
+        
+        // Verificar que los niveles son los correctos
+        assertEquals("Nivel 1 - Fácil", game.getLevelTemplate(0).getName());
+        assertEquals("Nivel 2 - Medio", game.getLevelTemplate(1).getName());
+        assertEquals("Nivel 3 - Difícil", game.getLevelTemplate(2).getName());
+    }
+    
+    /**
+     * Prueba que se puede obtener un template de nivel
+     */
+    @Test
+    public void testGetLevelTemplate() {
+        LevelTemplate level1 = game.getLevelTemplate(0);
+        assertNotNull(level1);
+        assertEquals(1, level1.getLevelNumber());
+        assertEquals(Difficulty.EASY, level1.getDifficulty());
+    }
+    
+    /**
+     * Prueba que retorna null para índice inválido
+     */
+    @Test
+    public void testGetLevelTemplateInvalidIndex() {
+        assertNull(game.getLevelTemplate(-1));
+        assertNull(game.getLevelTemplate(999));
+    }
+    
+    /**
+     * Prueba crear configuración de nivel usando template
+     */
+    @Test
+    public void testCreateLevelConfiguration() {
+        LevelConfiguration config = game.createLevelConfiguration(0);
+        assertNotNull(config);
+        assertFalse(config.getIceCreams().isEmpty());
+        assertFalse(config.getFruitWaves().isEmpty());
+    }
+    
+    /**
+     * Prueba que el juego inicia correctamente con índice de nivel
+     */
+    @Test
+    public void testStartGameWithIndex() {
+        game.startGame(0); // Nivel 1
         
         assertEquals(GameState.PLAYING, game.getState());
         assertNotNull(game.getCurrentLevel());
         assertEquals(1, game.getCurrentLevelNumber());
+    }
+    
+    /**
+     * Prueba que el juego inicia correctamente con configuración (método legacy)
+     * Este método mantiene compatibilidad con tests antiguos
+     */
+    @Test
+    public void testStartGame() {
+        game.startGameWithConfiguration(config);
+        
+        assertEquals(GameState.PLAYING, game.getState());
+        assertNotNull(game.getCurrentLevel());
+        assertEquals(1, game.getCurrentLevelNumber());
+    }
+    
+    /**
+     * Prueba que el juego inicia correctamente con configuración
+     */
+    @Test
+    public void testStartGameWithConfiguration() {
+        game.startGameWithConfiguration(config);
+        
+        assertEquals(GameState.PLAYING, game.getState());
+        assertNotNull(game.getCurrentLevel());
+        assertEquals(1, game.getCurrentLevelNumber());
+    }
+    
+    /**
+     * Prueba iniciar diferentes niveles
+     */
+    @Test
+    public void testStartDifferentLevels() {
+        // Nivel 1
+        game.startGame(0);
+        assertEquals(1, game.getCurrentLevelNumber());
+        
+        // Nivel 2
+        game.startGame(1);
+        assertEquals(2, game.getCurrentLevelNumber());
+        
+        // Nivel 3
+        game.startGame(2);
+        assertEquals(3, game.getCurrentLevelNumber());
+    }
+    
+    /**
+     * Prueba que no inicia con índice inválido
+     */
+    @Test
+    public void testStartGameWithInvalidIndex() {
+        game.startGame(999);
+        assertEquals(GameState.NOT_STARTED, game.getState());
+        assertNull(game.getCurrentLevel());
     }
     
     /**
@@ -68,7 +167,7 @@ public class BadDopoCreamTest {
     public void testGetCurrentLevel() {
         assertNull(game.getCurrentLevel());
         
-        game.startGame(config);
+        game.startGame(0);
         assertNotNull(game.getCurrentLevel());
         assertEquals(1, game.getCurrentLevel().getLevelNumber());
     }
@@ -80,7 +179,7 @@ public class BadDopoCreamTest {
     public void testGetState() {
         assertEquals(GameState.NOT_STARTED, game.getState());
         
-        game.startGame(config);
+        game.startGame(0);
         assertEquals(GameState.PLAYING, game.getState());
         
         game.pause();
@@ -98,7 +197,7 @@ public class BadDopoCreamTest {
      */
     @Test
     public void testPause() {
-        game.startGame(config);
+        game.startGame(0);
         assertEquals(GameState.PLAYING, game.getState());
         
         game.pause();
@@ -110,7 +209,7 @@ public class BadDopoCreamTest {
      */
     @Test
     public void testResume() {
-        game.startGame(config);
+        game.startGame(0);
         game.pause();
         assertEquals(GameState.PAUSED, game.getState());
         
@@ -123,7 +222,7 @@ public class BadDopoCreamTest {
      */
     @Test
     public void testResumeWhenNotPaused() {
-        game.startGame(config);
+        game.startGame(0);
         assertEquals(GameState.PLAYING, game.getState());
         
         game.resume();
@@ -135,7 +234,7 @@ public class BadDopoCreamTest {
      */
     @Test
     public void testMoveIceCream() {
-        game.startGame(config);
+        game.startGame(0);
         
         IceCream iceCream = game.getCurrentLevel().getBoard().getIceCreams().get(0);
         Position initialPosition = iceCream.getPosition();
@@ -151,7 +250,7 @@ public class BadDopoCreamTest {
      */
     @Test
     public void testMoveDeadIceCream() {
-        game.startGame(config);
+        game.startGame(0);
         
         IceCream iceCream = game.getCurrentLevel().getBoard().getIceCreams().get(0);
         iceCream.eliminate();
@@ -166,7 +265,7 @@ public class BadDopoCreamTest {
      */
     @Test
     public void testMoveWhenNotPlaying() {
-        game.startGame(config);
+        game.startGame(0);
         IceCream iceCream = game.getCurrentLevel().getBoard().getIceCreams().get(0);
         
         game.pause();
@@ -180,14 +279,13 @@ public class BadDopoCreamTest {
      */
     @Test
     public void testCreateIceBlocks() {
-        game.startGame(config);
+        game.startGameWithConfiguration(config);
         
         IceCream iceCream = game.getCurrentLevel().getBoard().getIceCreams().get(0);
         Board board = game.getCurrentLevel().getBoard();
         
         game.createIceBlocks(iceCream);
         
-
         Position nextPos = iceCream.getPosition().move(iceCream.getFacingDirection());
         assertTrue(board.hasIceBlockAt(nextPos));
     }
@@ -197,7 +295,7 @@ public class BadDopoCreamTest {
      */
     @Test
     public void testCreateIceBlocksWithDeadIceCream() {
-        game.startGame(config);
+        game.startGameWithConfiguration(config);
         
         IceCream iceCream = game.getCurrentLevel().getBoard().getIceCreams().get(0);
         Board board = game.getCurrentLevel().getBoard();
@@ -210,32 +308,78 @@ public class BadDopoCreamTest {
     }
     
     /**
-     * Prueba romper bloques de hielo
+     * Prueba romper bloques de hielo creados por el jugador
      */
     @Test
     public void testBreakIceBlocks() {
-        game.startGame(config);
+        game.startGameWithConfiguration(config);
         
         IceCream iceCream = game.getCurrentLevel().getBoard().getIceCreams().get(0);
         Board board = game.getCurrentLevel().getBoard();
         
+        // Crear bloques de hielo (estos tienen playerCreated = true)
         game.createIceBlocks(iceCream);
         Position nextPos = iceCream.getPosition().move(iceCream.getFacingDirection());
         assertTrue(board.hasIceBlockAt(nextPos));
         
+        // Romper los bloques
         game.breakIceBlocks(iceCream);
         assertFalse(board.hasIceBlockAt(nextPos));
     }
     
     /**
-     * Prueba reiniciar el nivel
+     * Prueba que NO se rompen bloques del nivel original
      */
     @Test
-    public void testRestartLevel() {
-        game.startGame(config);
+    public void testCannotBreakLevelBlocks() {
+        // Crear configuración con bloques del nivel
+        LevelBuilder builder = new LevelBuilder();
+        builder.addVanillaIceCream(5, 5)
+               .addIceBlock(5, 4); // Bloque del nivel (playerCreated = false)
+        LevelConfiguration configWithBlocks = builder.build();
+        
+        game.startGameWithConfiguration(configWithBlocks);
+        
+        IceCream iceCream = game.getCurrentLevel().getBoard().getIceCreams().get(0);
+        Board board = game.getCurrentLevel().getBoard();
+        
+        // Verificar que el bloque del nivel existe
+        Position blockPos = new Position(5, 4);
+        assertTrue(board.hasIceBlockAt(blockPos));
+        
+        // Mirar hacia el bloque
+        iceCream.setFacingDirection(Direction.NORTH);
+        
+        // Intentar romper el bloque del nivel
+        game.breakIceBlocks(iceCream);
+        
+        // El bloque del nivel NO debe romperse
+        assertTrue(board.hasIceBlockAt(blockPos));
+    }
+    
+    /**
+     * Prueba reiniciar el nivel con configuración
+     */
+    @Test
+    public void testRestartLevelWithConfiguration() {
+        game.startGameWithConfiguration(config);
         game.pause();
         
-        game.restartLevel(config);
+        game.startGameWithConfiguration(config); // Reiniciar manualmente
+        
+        assertEquals(GameState.PLAYING, game.getState());
+        assertNotNull(game.getCurrentLevel());
+    }
+    
+    /**
+     * Prueba reiniciar el nivel con índice
+     */
+    @Test
+    public void testRestartLevelWithIndex() {
+        game.startGame(0);
+        game.pause();
+        
+        game.restartLevel(0);
         
         assertEquals(GameState.PLAYING, game.getState());
         assertNotNull(game.getCurrentLevel());
@@ -246,7 +390,7 @@ public class BadDopoCreamTest {
      */
     @Test
     public void testEndGame() {
-        game.startGame(config);
+        game.startGame(0);
         assertEquals(GameState.PLAYING, game.getState());
         
         game.endGame();
@@ -260,8 +404,11 @@ public class BadDopoCreamTest {
     public void testGetCurrentLevelNumber() {
         assertEquals(1, game.getCurrentLevelNumber());
         
-        game.startGame(config);
+        game.startGame(0);
         assertEquals(1, game.getCurrentLevelNumber());
+        
+        game.startGame(1);
+        assertEquals(2, game.getCurrentLevelNumber());
     }
     
     /**
@@ -269,7 +416,7 @@ public class BadDopoCreamTest {
      */
     @Test
     public void testGetTotalScoreInitial() {
-        game.startGame(config);
+        game.startGame(0);
         assertEquals(0, game.getTotalScore());
     }
     
@@ -278,7 +425,7 @@ public class BadDopoCreamTest {
      */
     @Test
     public void testGetTotalScoreAfterCollecting() {
-        game.startGame(config);
+        game.startGame(0);
         
         IceCream iceCream = game.getCurrentLevel().getBoard().getIceCreams().get(0);
         iceCream.addScore(100);
@@ -299,7 +446,7 @@ public class BadDopoCreamTest {
      */
     @Test
     public void testUpdate() {
-        game.startGame(config);
+        game.startGame(0);
         
         game.update();
         
@@ -311,7 +458,7 @@ public class BadDopoCreamTest {
      */
     @Test
     public void testUpdateWhenNotPlaying() {
-        game.startGame(config);
+        game.startGame(0);
         game.pause();
         
         GameState stateBefore = game.getState();
@@ -320,4 +467,40 @@ public class BadDopoCreamTest {
         
         assertEquals(stateBefore, stateAfter);
     }
+    
+    /**
+     * Prueba que las oleadas funcionan correctamente
+     */
+    @Test
+    public void testFruitWaves() {
+        game.startGame(0); // Nivel 1 tiene 2 oleadas
+        
+        Level level = game.getCurrentLevel();
+        
+        // Verificar que hay oleadas configuradas
+        assertTrue(level.getTotalFruits() > 0);
+        
+        // Inicialmente, solo la primera oleada está activa
+        int initialFruits = level.getCollectedFruits();
+        assertEquals(0, initialFruits);
+    }
+    
+    /**
+     * Prueba la integración con LevelTemplate
+     */
+    @Test
+    public void testLevelTemplateIntegration() {
+        // Obtener template del nivel 1
+        LevelTemplate template = game.getLevelTemplate(0);
+        assertNotNull(template);
+        
+        // Verificar propiedades del template
+        assertEquals("Nivel 1 - Fácil", template.getName());
+        assertEquals(1, template.getLevelNumber());
+        assertEquals(Difficulty.EASY, template.getDifficulty());
+        assertNotNull(template.getDescription());
+        assertTrue(template.getDescription().contains("Bananos"));
+        assertTrue(template.getDescription().contains("Uvas"));
+    }
+
 }

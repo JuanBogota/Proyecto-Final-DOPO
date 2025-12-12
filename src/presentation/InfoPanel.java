@@ -1,7 +1,7 @@
 package presentation;
 
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
 
 /**
  * Panel que muestra información del juego (tiempo, puntaje, frutas).
@@ -37,15 +37,15 @@ public class InfoPanel extends JPanel {
         Font labelFont = new Font("Arial", Font.BOLD, 16);
         
         // Label de tiempo
-        timeLabel = createStyledLabel("⏱️ Tiempo: 180s", labelFont, new Color(60, 120, 180));
+        timeLabel = createStyledLabel("Tiempo: 180s", labelFont, new Color(60, 120, 180));
         add(timeLabel);
         
         // Label de puntaje
-        scoreLabel = createStyledLabel("🏆 Puntaje: 0", labelFont, new Color(200, 140, 0));
+        scoreLabel = createStyledLabel("Puntaje: 0", labelFont, new Color(200, 140, 0));
         add(scoreLabel);
         
         // Label de frutas
-        fruitsLabel = createStyledLabel("🍇 Frutas: 0/0", labelFont, new Color(160, 80, 160));
+        fruitsLabel = createStyledLabel("Frutas: 0/0", labelFont, new Color(160, 80, 160));
         add(fruitsLabel);
         
         // Label de controles

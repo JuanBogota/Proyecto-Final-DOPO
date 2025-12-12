@@ -1,7 +1,11 @@
 package domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Builder para construir niveles de forma fluida.
+ * Soporta oleadas de frutas.
  * 
  * @author Juan Daniel Bogotá Fuentes
  * @author Nicolás Felipe Bernal Gallo
@@ -9,12 +13,26 @@ package domain;
  */
 public class LevelBuilder {
     private LevelConfiguration config;
+    private List<Fruit> currentWave;
     
     /**
      * Constructor del LevelBuilder.
      */
     public LevelBuilder() {
         this.config = new LevelConfiguration();
+        this.currentWave = new ArrayList<>();
+    }
+    
+    /**
+     * Inicia una nueva oleada de frutas.
+     * Las frutas de la oleada anterior se guardan.
+     */
+    public LevelBuilder startNewWave() {
+        if (!currentWave.isEmpty()) {
+            config.addWave(new ArrayList<>(currentWave));
+            currentWave.clear();
+        }
+        return this;
     }
     
     /**
@@ -45,7 +63,8 @@ public class LevelBuilder {
      * Agrega uvas en una posición
      */
     public LevelBuilder addGrape(int x, int y) {
-        config.addFruit(new Grape(new Position(x, y)));
+        Fruit grape = new Grape(new Position(x, y));
+        currentWave.add(grape);
         return this;
     }
     
@@ -53,7 +72,8 @@ public class LevelBuilder {
      * Agrega un plátano en una posición
      */
     public LevelBuilder addBanana(int x, int y) {
-        config.addFruit(new Banana(new Position(x, y)));
+        Fruit banana = new Banana(new Position(x, y));
+        currentWave.add(banana);
         return this;
     }
     
@@ -82,7 +102,7 @@ public class LevelBuilder {
     }
     
     /**
-     * Agrega múltiples bloques de hielo en línea horizontal
+     * Agrega múltiples bloques de hielo en lí­nea horizontal
      */
     public LevelBuilder addHorizontalIceBlocks(int startX, int endX, int y) {
         for (int x = startX; x <= endX; x++) {
@@ -92,7 +112,7 @@ public class LevelBuilder {
     }
     
     /**
-     * Agrega múltiples bloques de hielo en línea vertical
+     * Agrega múltiples bloques de hielo en lí­nea vertical
      */
     public LevelBuilder addVerticalIceBlocks(int x, int startY, int endY) {
         for (int y = startY; y <= endY; y++) {
@@ -105,6 +125,10 @@ public class LevelBuilder {
      * Construye y retorna la configuración del nivel
      */
     public LevelConfiguration build() {
+        // Guardar la última oleada si hay frutas pendientes
+        if (!currentWave.isEmpty()) {
+            config.addWave(new ArrayList<>(currentWave));
+        }
         return config;
     }
 }

@@ -17,14 +17,14 @@ public class GameController implements KeyListener {
     private BadDopoCream game;
     private GamePanel gamePanel;
     private InfoPanel infoPanel;
-    private BadDopoCreamGUI mainWindow;
+    private MainWindow mainWindow;
     private Timer gameTimer;
     private IceCream playerIceCream;
     
     /**
      * Constructor del controlador
      */
-    public GameController(BadDopoCreamGUI mainWindow) {
+    public GameController(MainWindow mainWindow) {
         this.mainWindow = mainWindow;
         this.game = new BadDopoCream();
     }
@@ -38,10 +38,11 @@ public class GameController implements KeyListener {
     }
     
     /**
-     * Inicia un nuevo juego con la configuración especificada
+     * Inicia un nuevo juego con el nivel especificado
+     * @param levelIndex Índice del nivel (0, 1, 2, etc.)
      */
-    public void startNewGame(LevelConfiguration config) {
-        game.startGame(config);
+    public void startNewGame(int levelIndex) {
+        game.startGame(levelIndex);
         
         if (!game.getCurrentLevel().getBoard().getIceCreams().isEmpty()) {
             playerIceCream = game.getCurrentLevel().getBoard().getIceCreams().get(0);
@@ -141,9 +142,10 @@ public class GameController implements KeyListener {
     
     /**
      * Reinicia el nivel actual
+     * @param levelIndex Índice del nivel a reiniciar
      */
-    public void restartLevel(LevelConfiguration config) {
-        game.restartLevel(config);
+    public void restartLevel(int levelIndex) {
+        game.restartLevel(levelIndex);
         updateView();
     }
     

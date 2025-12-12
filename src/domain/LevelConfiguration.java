@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * Configuración de un nivel.
- * Almacena la configuración inicial de un nivel.
+ * Almacena la configuración inicial de un nivel con soporte para oleadas de frutas.
  * 
  * @author Juan Daniel Bogotá Fuentes
  * @author Nicolás Felipe Bernal Gallo
@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class LevelConfiguration {
     private List<IceCream> iceCreams;
-    private List<Fruit> fruits;
+    private List<List<Fruit>> fruitWaves; // Oleadas de frutas
     private List<Enemy> enemies;
     private List<IceBlock> obstacles;
     
@@ -22,13 +22,13 @@ public class LevelConfiguration {
      */
     public LevelConfiguration() {
         this.iceCreams = new ArrayList<>();
-        this.fruits = new ArrayList<>();
+        this.fruitWaves = new ArrayList<>();
         this.enemies = new ArrayList<>();
         this.obstacles = new ArrayList<>();
     }
     
     /**
-     * agrega un helado a la configuración del nivel
+     * Agrega un helado a la configuración del nivel
      * @param iceCream
      */
     public void addIceCream(IceCream iceCream) {
@@ -36,15 +36,28 @@ public class LevelConfiguration {
     }
     
     /**
-     * agrega una fruta a la configuración del nivel
-     * @param fruit
+     * Agrega una oleada de frutas
+     * @param wave Lista de frutas de la oleada
      */
-    public void addFruit(Fruit fruit) {
-        fruits.add(fruit);
+    public void addWave(List<Fruit> wave) {
+        fruitWaves.add(new ArrayList<>(wave));
     }
     
     /**
-     * agrega un enemigo a la configuración del nivel
+     * Agrega una fruta a la configuración del nivel (retrocompatibilidad)
+     * @param fruit
+     */
+    @Deprecated
+    public void addFruit(Fruit fruit) {
+        // Agregar a la primera oleada por defecto
+        if (fruitWaves.isEmpty()) {
+            fruitWaves.add(new ArrayList<>());
+        }
+        fruitWaves.get(0).add(fruit);
+    }
+    
+    /**
+     * Agrega un enemigo a la configuración del nivel
      * @param enemy
      */
     public void addEnemy(Enemy enemy) {
@@ -52,7 +65,7 @@ public class LevelConfiguration {
     }
     
     /**
-     * agrega un obstáculo a la configuración del nivel
+     * Agrega un obstáculo a la configuración del nivel
      * @param obstacle
      */
     public void addObstacle(IceBlock obstacle) {
@@ -68,11 +81,28 @@ public class LevelConfiguration {
     }
     
     /**
-     * Obtiene la lista de frutas en la configuración
-     * @return lista de frutas
+     * Obtiene todas las oleadas de frutas
+     * @return lista de oleadas
      */
+    public List<List<Fruit>> getFruitWaves() {
+        List<List<Fruit>> copy = new ArrayList<>();
+        for (List<Fruit> wave : fruitWaves) {
+            copy.add(new ArrayList<>(wave));
+        }
+        return copy;
+    }
+    
+    /**
+     * Obtiene la lista de frutas en la configuración
+     * @return lista de todas las frutas
+     */
+    @Deprecated
     public List<Fruit> getFruits() {
-        return new ArrayList<>(fruits);
+        List<Fruit> allFruits = new ArrayList<>();
+        for (List<Fruit> wave : fruitWaves) {
+            allFruits.addAll(wave);
+        }
+        return allFruits;
     }
     
     /**

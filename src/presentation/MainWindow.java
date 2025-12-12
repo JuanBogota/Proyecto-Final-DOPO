@@ -1,26 +1,26 @@
 package presentation;
 
-import domain.LevelConfiguration;
 import java.awt.*;
 import javax.swing.*;
 
 /**
  * Ventana principal del juego Bad DOPO Cream.
+ * Corrección de la profe --> Solo depende de GameState de dominio.
  * 
  * @author Juan Daniel Bogotá Fuentes
  * @author Nicolás Felipe Bernal Gallo
  * @version 1.0
  */
-public class BadDopoCreamGUI extends JFrame {
+public class MainWindow extends JFrame {
     private GamePanel gamePanel;
     private InfoPanel infoPanel;
     private GameController controller;
-    private LevelConfiguration currentConfig;
+    private int currentLevelIndex = -1;
     
     /**
      * Constructor de la ventana principal
      */
-    public BadDopoCreamGUI() {
+    public MainWindow() {
         setTitle("Bad DOPO Cream");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
@@ -47,7 +47,7 @@ public class BadDopoCreamGUI extends JFrame {
         gamePanel.addKeyListener(controller);
         add(gamePanel, BorderLayout.CENTER);
         
-        // Panel de información
+        // Panel de informaciónn
         infoPanel = new InfoPanel();
         infoPanel.setPreferredSize(new Dimension(200, 480));
         add(infoPanel, BorderLayout.EAST);
@@ -111,12 +111,12 @@ public class BadDopoCreamGUI extends JFrame {
      * Inicia un nuevo juego
      */
     private void startNewGame() {
-        ConfigDialog dialog = new ConfigDialog(this);
-        LevelConfiguration config = dialog.showDialog();
+        ConfigDialog dialog = new ConfigDialog(this, controller.getGame());
+        int levelIndex = dialog.showDialog();
         
-        if (config != null) {
-            currentConfig = config;
-            controller.startNewGame(config);
+        if (levelIndex >= 0) {
+            currentLevelIndex = levelIndex;
+            controller.startNewGame(levelIndex);
             gamePanel.requestFocusInWindow();
         }
     }
@@ -125,7 +125,7 @@ public class BadDopoCreamGUI extends JFrame {
      * Reinicia el nivel actual
      */
     private void restartLevel() {
-        if (currentConfig != null) {
+        if (currentLevelIndex >= 0) {
             int response = JOptionPane.showConfirmDialog(
                 this,
                 "¿Deseas reiniciar el nivel actual?",
@@ -134,7 +134,7 @@ public class BadDopoCreamGUI extends JFrame {
             );
             
             if (response == JOptionPane.YES_OPTION) {
-                controller.restartLevel(currentConfig);
+                controller.restartLevel(currentLevelIndex);
                 gamePanel.requestFocusInWindow();
             }
         } else {
@@ -194,7 +194,7 @@ public class BadDopoCreamGUI extends JFrame {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             } catch (Exception e) {
             }
-            BadDopoCreamGUI window = new BadDopoCreamGUI();
+            MainWindow window = new MainWindow();
             window.setVisible(true);
         });
     }
