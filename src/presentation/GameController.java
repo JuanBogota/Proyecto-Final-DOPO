@@ -1,9 +1,9 @@
 package presentation;
 
 import domain.*;
-import javax.swing.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import javax.swing.*;
 
 /**
  * Controlador del juego que conecta la presentación con el dominio.
@@ -17,14 +17,14 @@ public class GameController implements KeyListener {
     private BadDopoCream game;
     private GamePanel gamePanel;
     private InfoPanel infoPanel;
-    private MainWindow mainWindow;
+    private BadDopoCreamGUI mainWindow;
     private Timer gameTimer;
     private IceCream playerIceCream;
     
     /**
      * Constructor del controlador
      */
-    public GameController(MainWindow mainWindow) {
+    public GameController(BadDopoCreamGUI mainWindow) {
         this.mainWindow = mainWindow;
         this.game = new BadDopoCream();
     }

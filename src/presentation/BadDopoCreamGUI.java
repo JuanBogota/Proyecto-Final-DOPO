@@ -1,8 +1,8 @@
 package presentation;
 
 import domain.LevelConfiguration;
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
 
 /**
  * Ventana principal del juego Bad DOPO Cream.
@@ -11,7 +11,7 @@ import java.awt.*;
  * @author Nicolás Felipe Bernal Gallo
  * @version 1.0
  */
-public class MainWindow extends JFrame {
+public class BadDopoCreamGUI extends JFrame {
     private GamePanel gamePanel;
     private InfoPanel infoPanel;
     private GameController controller;
@@ -20,7 +20,7 @@ public class MainWindow extends JFrame {
     /**
      * Constructor de la ventana principal
      */
-    public MainWindow() {
+    public BadDopoCreamGUI() {
         setTitle("Bad DOPO Cream");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
@@ -42,6 +42,7 @@ public class MainWindow extends JFrame {
         
         // Panel de juego
         gamePanel = new GamePanel();
+        gamePanel.setMainWindow(this);
         gamePanel.setFocusable(true);
         gamePanel.addKeyListener(controller);
         add(gamePanel, BorderLayout.CENTER);
@@ -63,6 +64,13 @@ public class MainWindow extends JFrame {
         add(bottomPanel, BorderLayout.SOUTH);
     }
     
+    /**
+     * Inicia un nuevo juego desde el panel (llamado al hacer click en START)
+     */
+    public void startNewGameFromPanel() {
+        startNewGame();
+    }
+
     /**
      * Crea la barra de menú
      */
@@ -186,7 +194,7 @@ public class MainWindow extends JFrame {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             } catch (Exception e) {
             }
-            MainWindow window = new MainWindow();
+            BadDopoCreamGUI window = new BadDopoCreamGUI();
             window.setVisible(true);
         });
     }
