@@ -1,0 +1,29 @@
+/.metadata/
+
+# Java
+*.class
+*.log
+*.java~
+
+# BlueJ
+*.ctxt
+package.bluej
+bluej.pkg
+
+
+# Astah
+*.bak
+*.lock
+*.tmp
+
+# Eclipse
+.classpath
+.project
+
+#Carpeta doc que no se debe subir
+doc/
+bin/
+ProyectoFinal/
+sprites/
+.settings/
+.vscode/
