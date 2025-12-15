@@ -187,7 +187,7 @@ public class Board {
                 break;
             }
             
-            // Si hay un obstáculo sólido, detener
+            // Si hay un obstáculo solido, detener
             if (isSolidAt(current)) {
                 break;
             }
@@ -219,12 +219,12 @@ public class Board {
             
             for (GameObject obj : objects) {
                 if (obj instanceof IceBlock iceBlock) {
-                    // SOLO romper bloques creados por el jugador
+                    // SOLO romper bloques creados por el jugador, cambio marcado por la profe
                     if (iceBlock.isPlayerCreated()) {
                         removeObject(obj);
                         brokenBlocks.add(iceBlock);
                     } else {
-                        // Si encontramos un bloque del nivel, detenemos
+                        // Si encontramos un bloque del nivel, no detruye 
                         return brokenBlocks;
                     }
                 }
