@@ -50,7 +50,7 @@ public class Level {
             board.addObject(iceCream);
         }
         
-        // Guardar todas las oleadas de frutas
+        // Guardar todas las oleadas de frutas, cambios de la ultima sustentacion
         this.fruitWaves = config.getFruitWaves();
         
         // Calcular total de frutas a recolectar
@@ -67,7 +67,7 @@ public class Level {
         }
         
         // Agregar obstáculos del nivel (estos NO se pueden romper)
-        for (IceBlock obstacle : config.getObstacles()) {
+        for (Obstacle obstacle : config.getObstacles()) {
             board.addObject(obstacle);
         }
     }
@@ -99,7 +99,7 @@ public class Level {
     }
     
     /**
-     * Actualiza el estado del nivel (llamado en cada tick del juego)
+     * Actualiza el estado del nivel
      */
     public void update() {
         if (completed) {
@@ -113,7 +113,6 @@ public class Level {
         
         checkCollectibles();
         
-        // Verificar si se completó la oleada actual
         if (isCurrentWaveComplete() && currentWaveIndex < fruitWaves.size()) {
             activateNextWave();
         }
@@ -156,7 +155,7 @@ public class Level {
     }
     
     /**
-     * Decrementa el tiempo restante (llamar cada segundo)
+     * Decrementa el tiempo restante
      */
     public void decrementTime() {
         if (timeRemaining > 0) {
@@ -182,7 +181,6 @@ public class Level {
      * Indica si el jugador ha perdido
      */
     public boolean hasLost() {
-        // Pierde si se acabó el tiempo o todos los helados están muertos
         boolean allDead = true;
         for (IceCream iceCream : board.getIceCreams()) {
             if (iceCream.isAlive()) {

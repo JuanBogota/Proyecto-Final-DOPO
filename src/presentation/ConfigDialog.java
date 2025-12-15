@@ -8,8 +8,7 @@ import javax.swing.*;
 
 /**
  * Diálogo para configurar un nuevo nivel del juego.
- * Principio de Dependencia: Solo depende de BadDopoCream (capa de dominio).
- * Principio Open/Closed: No necesita modificarse al agregar nuevos niveles.
+ * Solo depende de BadDopoCream
  * 
  * @author Juan Daniel Bogotá Fuentes
  * @author Nicolás Felipe Bernal Gallo

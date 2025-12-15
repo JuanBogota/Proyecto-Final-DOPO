@@ -7,11 +7,11 @@ import domain.*;
 
 /**
  * Pruebas unitarias para la clase BadDopoCream.
- * Actualizado para arquitectura SOLID v3.0
+ * 
  * 
  * @author Juan Daniel Bogotá Fuentes
  * @author Nicolás Felipe Bernal Gallo
- * @version 3.0
+ * @version 1.0
  */
 public class BadDopoCreamTest {
     

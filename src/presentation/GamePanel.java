@@ -124,6 +124,8 @@ public class GamePanel extends JPanel {
         
         // Obstáculos
         colorMap.put("ICE_BLOCK", new Color(173, 216, 230));
+        colorMap.put("BONFIRE", new Color(255, 69, 0));
+        colorMap.put("HOT_TILE", new Color(200, 20, 60));
     }
     
     /**
@@ -239,6 +241,10 @@ public class GamePanel extends JPanel {
             drawEnemy(g2d, obj, x, y, color);
         } else if (obj instanceof IceBlock) {
             drawIceBlock(g2d, x, y, color);
+        } else if (obj instanceof Bonfire) {
+            drawBonfire(g2d, x, y, color);
+        } else if (obj instanceof HotTile) {
+            drawHotTile(g2d, x, y, color);
         }
     }
     
@@ -363,5 +369,43 @@ public class GamePanel extends JPanel {
         //Bordeeee
         g2d.setColor(color.darker());
         g2d.drawRect(x + 2, y + 2, CELL_SIZE - 4, CELL_SIZE - 4);
+    }
+
+    /**
+     * Dibuja una fogata
+     */
+    private void drawBonfire(Graphics2D g2d, int x, int y, Color color) {
+        // Base de la fogata
+        g2d.setColor(new Color(139, 69, 19)); // Marrón oscuro
+        g2d.fillOval(x + CELL_SIZE/4, y + CELL_SIZE - 10, CELL_SIZE/2, 10);
+        
+        // Llamas
+        g2d.setColor(color);
+        int[] xPoints = {x + CELL_SIZE/2, x + CELL_SIZE/3, x + 2*CELL_SIZE/3};
+        int[] yPoints = {y + 5, y + CELL_SIZE - 10, y + CELL_SIZE - 10};
+        g2d.fillPolygon(xPoints, yPoints, 3);
+        
+        g2d.setColor(Color.ORANGE);
+        int[] xPoints2 = {x + CELL_SIZE/2, x + CELL_SIZE/3 + 5, x + 2*CELL_SIZE/3 - 5};
+        int[] yPoints2 = {y + 10, y + CELL_SIZE - 10, y + CELL_SIZE - 10};
+        g2d.fillPolygon(xPoints2, yPoints2, 3);
+    }
+
+    /**
+     * Dibuja una losa caliente
+     */
+    private void drawHotTile(Graphics2D g2d, int x, int y, Color color) {
+        g2d.setColor(color);
+        g2d.fillRect(x + 2, y + 2, CELL_SIZE - 4, CELL_SIZE - 4);
+        
+        // Bordes
+        g2d.setColor(color.darker());
+        g2d.drawRect(x + 2, y + 2, CELL_SIZE - 4, CELL_SIZE - 4);
+        
+        // Dibuja líneas onduladas para indicar calor
+        g2d.setColor(Color.RED);
+        for (int i = 0; i < CELL_SIZE; i += 6) {
+            g2d.drawArc(x + i, y + CELL_SIZE/4, 6, 12, 0, 180);
+        }
     }
 }

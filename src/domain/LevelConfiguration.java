@@ -15,7 +15,7 @@ public class LevelConfiguration {
     private List<IceCream> iceCreams;
     private List<List<Fruit>> fruitWaves; // Oleadas de frutas
     private List<Enemy> enemies;
-    private List<IceBlock> obstacles;
+    private List<Obstacle> obstacles;
     
     /**
      * Constructor de la configuración del nivel.
@@ -68,7 +68,7 @@ public class LevelConfiguration {
      * Agrega un obstáculo a la configuración del nivel
      * @param obstacle
      */
-    public void addObstacle(IceBlock obstacle) {
+    public void addObstacle(Obstacle obstacle) {
         obstacles.add(obstacle);
     }
     
@@ -117,7 +117,7 @@ public class LevelConfiguration {
      * Obtiene la lista de obstáculos en la configuración
      * @return lista de obstáculos
      */
-    public List<IceBlock> getObstacles() {
+    public List<Obstacle> getObstacles() {
         return new ArrayList<>(obstacles);
     }
 }

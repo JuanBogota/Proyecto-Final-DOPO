@@ -6,8 +6,6 @@ import java.util.List;
 /**
  * Clase principal que gestiona el juego.
  * Coordina el flujo del juego y sus estados.
- * Principio de Responsabilidad Única: Gestiona el juego y la creación de niveles.
- * Principio Open/Closed: Abierto para extensión (nuevos niveles), cerrado para modificación.
  * 
  * @author Juan Daniel Bogotá Fuentes
  * @author Nicolás Felipe Bernal Gallo
@@ -34,14 +32,12 @@ public class BadDopoCream {
     
     /**
      * Inicializa los niveles disponibles.
-     * Principio Open/Closed: Para agregar un nuevo nivel, solo agrega una nueva instancia aquí.
      */
     private void initializeAvailableLevels() {
         availableLevels = new ArrayList<>();
         availableLevels.add(new Level1Template());
         availableLevels.add(new Level2Template());
         availableLevels.add(new Level3Template());
-        // Para agregar un nuevo nivel: availableLevels.add(new Level4Template());
     }
     
     /**
@@ -82,7 +78,7 @@ public class BadDopoCream {
     
     /**
      * Inicia el juego con un nivel específico
-     * @param levelIndex Índice del nivel (0, 1, 2, etc.)
+     * @param levelIndex Índice del nivel
      */
     public void startGame(int levelIndex) {
         LevelConfiguration config = createLevelConfiguration(levelIndex);
@@ -113,19 +109,19 @@ public class BadDopoCream {
         
         long currentTime = System.currentTimeMillis();
         
-        // Actualiza el nivel cada cierto intervalo (100ms)
+        // Intervalo para la velocidad del juego, lo subimos a 400ms y entre 1000ms 
         if (currentTime - lastUpdateTime >= 400) {
             currentLevel.update();
             lastUpdateTime = currentTime;
         }
         
-        // Decrementa el tiempo cada segundo
+        
         if (currentTime - lastSecondTime >= 1000) {
             currentLevel.decrementTime();
             lastSecondTime = currentTime;
         }
         
-        // Verifica condiciones de victoria/derrota
+        
         checkGameState();
     }
     

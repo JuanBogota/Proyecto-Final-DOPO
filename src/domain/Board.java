@@ -182,17 +182,14 @@ public class Board {
         Position current = startPosition.move(direction);
         
         while (isValidPosition(current)) {
-            // Si ya hay un bloque de hielo, detener
             if (hasIceBlockAt(current)) {
                 break;
             }
             
-            // Si hay un obstáculo sólido, detener
             if (isSolidAt(current)) {
                 break;
             }
             
-            // Crear nuevo bloque (marcado como creado por jugador)
             IceBlock newBlock = new IceBlock(current, true);
             addObject(newBlock);
             createdBlocks.add(newBlock);
@@ -219,12 +216,12 @@ public class Board {
             
             for (GameObject obj : objects) {
                 if (obj instanceof IceBlock iceBlock) {
-                    // SOLO romper bloques creados por el jugador
+                    // SOLO romper bloques creados por el jugador, cambio marcado por la profe
                     if (iceBlock.isPlayerCreated()) {
                         removeObject(obj);
                         brokenBlocks.add(iceBlock);
                     } else {
-                        // Si encontramos un bloque del nivel, detenemos
+                        // Si encontramos un bloque del nivel, no detruye 
                         return brokenBlocks;
                     }
                 }
