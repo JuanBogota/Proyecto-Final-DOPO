@@ -44,26 +44,6 @@ public class Level1Template implements LevelTemplate {
     }
     
     @Override
-    public String getDescription() {
-        return """
-               Nivel 1 - Fácil
-               
-               Oleadas:
-               1. 4 Bananos (100 pts c/u) = 400 pts
-               2. 4 Uvas (50 pts c/u) = 200 pts
-               
-               Enemigos:
-               • 2 Trolls (movimiento lineal)
-               
-               Obstáculos:
-               • Bloques de hielo básicos
-               
-               Puntaje máximo: 600 puntos
-               Tiempo límite: 3 minutos
-               """;
-    }
-    
-    @Override
     public int getLevelNumber() {
         return 1;
     }

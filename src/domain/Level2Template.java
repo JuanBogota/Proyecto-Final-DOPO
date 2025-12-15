@@ -56,8 +56,8 @@ public class Level2Template implements LevelTemplate {
                2. 6 Uvas (50 pts c/u) = 300 pts
                
                Enemigos:
-               • 2 Trolls (movimiento lineal)
-               • 1 Maceta (persigue al jugador)
+               • 2 Trolls
+               • 1 Maceta
                
                Obstáculos:
                • Laberinto de bloques de hielo

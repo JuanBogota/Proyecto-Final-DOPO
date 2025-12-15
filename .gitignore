@@ -20,7 +20,7 @@ bluej.pkg
 .classpath
 .project
 
-#Carpeta doc que no se debe subir
+#Carpeta doc que no se sube
 doc/
 bin/
 ProyectoFinal/

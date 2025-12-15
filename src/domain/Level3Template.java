@@ -14,13 +14,13 @@ public class Level3Template implements LevelTemplate {
         // Agregar helado del jugador
         builder.addVanillaIceCream(12, 7);
         
-        // PRIMERA OLEADA: Bananos (400 pts total)
+        // PRIMERA OLEADA: Bananos
         builder.addBanana(12, 1)
                .addBanana(12, 13)
                .addBanana(1, 7)
                .addBanana(23, 7);
         
-        // SEGUNDA OLEADA: Uvas (400 pts total)
+        // SEGUNDA OLEADA: Uvas
         builder.startNewWave()
                .addGrape(1, 1)
                .addGrape(23, 1)
@@ -39,8 +39,8 @@ public class Level3Template implements LevelTemplate {
         
         // Laberinto complejo de obstáculos
         builder.addHorizontalIceBlocks(5, 8, 4)
-               .addHorizontalIceBlocks(16, 19, 4)
-               .addHorizontalIceBlocks(5, 8, 10)
+               .addHorizontalBonfires(16, 19, 4)
+               .addHorizontalHotTiles(5, 8, 10)
                .addHorizontalIceBlocks(16, 19, 10)
                .addVerticalIceBlocks(10, 2, 5)
                .addVerticalIceBlocks(14, 2, 5)
@@ -63,8 +63,8 @@ public class Level3Template implements LevelTemplate {
                2. 8 Uvas (50 pts c/u) = 400 pts
                
                Enemigos:
-               • 2 Trolls (movimiento lineal)
-               • 2 Macetas (persiguen al jugador)
+               • 2 Trolls
+               • 2 Macetas
                
                Obstáculos:
                • Laberinto complejo de hielo

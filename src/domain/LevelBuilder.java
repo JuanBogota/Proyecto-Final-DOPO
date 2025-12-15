@@ -131,4 +131,61 @@ public class LevelBuilder {
         }
         return config;
     }
+
+    /**
+     * Agrega una losa caliente en una posición
+     */
+    public LevelBuilder addHotTile(int x, int y) {
+        config.addObstacle(new HotTile(new Position(x, y)));
+        return this;
+    }
+
+    /**
+     * Agrega una fogata en una posición
+     */
+    public LevelBuilder addBonfire(int x, int y) {
+        config.addObstacle(new Bonfire(new Position(x, y)));
+        return this;
+    }
+
+    /**
+     * Agrega múltiples bloques de hielo en lí­nea horizontal
+     */
+    public LevelBuilder addHorizontalBonfires(int startX, int endX, int y) {
+        for (int x = startX; x <= endX; x++) {
+            addBonfire(x, y);
+        }
+        return this;
+    }
+
+    /**
+     * Agrega múltiples bloques de hielo en lí­nea vertical
+     */
+    public LevelBuilder addVerticalBonfires(int x, int startY, int endY) {
+        for (int y = startY; y <= endY; y++) {
+            addBonfire(x, y);
+        }
+        return this;
+    }
+    
+    /**
+     * Agrega múltiples losas calientes en lí­nea horizontal
+     */
+    public LevelBuilder addHorizontalHotTiles(int startX, int endX, int y) {
+        for (int x = startX; x <= endX; x++) {
+            addHotTile(x, y);
+        }
+        return this;
+    }
+
+    /**
+     * Agrega múltiples losas calientes en lí­nea vertical
+     */
+    public LevelBuilder addVerticalHotTiles(int x, int startY, int endY) {
+        for (int y = startY; y <= endY; y++) {
+            addHotTile(x, y);
+        }
+        return this;
+    }
+
 }
