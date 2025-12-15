@@ -182,17 +182,14 @@ public class Board {
         Position current = startPosition.move(direction);
         
         while (isValidPosition(current)) {
-            // Si ya hay un bloque de hielo, detener
             if (hasIceBlockAt(current)) {
                 break;
             }
             
-            // Si hay un obstáculo solido, detener
             if (isSolidAt(current)) {
                 break;
             }
             
-            // Crear nuevo bloque (marcado como creado por jugador)
             IceBlock newBlock = new IceBlock(current, true);
             addObject(newBlock);
             createdBlocks.add(newBlock);

@@ -8,7 +8,7 @@ package domain;
  * @author Nicolás Felipe Bernal Gallo
  * @version 1.0
  */
-public class IceBlock extends GameObject {
+public class IceBlock extends Obstacle {
     private boolean playerCreated; // true si fue creado por el jugador, false si es del escenario
     
     /**
@@ -29,17 +29,12 @@ public class IceBlock extends GameObject {
     }
     
     @Override
-    public void update(Board board) {
-        // Los bloques de hielo normales no tienen comportamiento automático
-    }
-    
-    @Override
-    public boolean isSolid() {
-        return true;
-    }
-    
-    @Override
     public String getType() {
         return "ICE_BLOCK";
+    }
+
+    @Override
+    public boolean isDestructible() {
+        return playerCreated; // Solo los bloques creados por el jugador son destructibles
     }
 }
