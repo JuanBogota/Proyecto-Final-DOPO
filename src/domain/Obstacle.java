@@ -27,7 +27,10 @@ public abstract class Obstacle extends GameObject {
         //los obstáculos no tienen comportamiento automático
     }
     
-    // NUEVO MÉTODO ABSTRACTO
+    /**
+     * Indica si el obstáculo es destructible.
+     * @return true si es destructible, false en caso contrario.
+     */
     public abstract boolean isDestructible();
 }
 
