@@ -40,7 +40,27 @@ public class Level1Template implements LevelTemplate {
     
     @Override
     public String getName() {
-        return "Nivel 1 - Fácil";
+        return "Nivel 1";
+    }
+    
+    @Override
+    public String getDescription() {
+        return """
+               Nivel 1
+               
+               Oleadas:
+               1. 4 Bananos (100 pts c/u) = 400 pts
+               2. 4 Uvas (50 pts c/u) = 200 pts
+               
+               Enemigos:
+               • 2 Trolls
+               
+               Obstáculos:
+               • 10 Bloques de hielo
+               
+               Puntaje máximo: 600 puntos
+               Tiempo límite: 3 minutos
+               """;
     }
     
     @Override

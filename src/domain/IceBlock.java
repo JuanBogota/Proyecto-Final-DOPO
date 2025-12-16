@@ -35,6 +35,6 @@ public class IceBlock extends Obstacle {
 
     @Override
     public boolean isDestructible() {
-        return playerCreated; // Solo los bloques creados por el jugador son destructibles
+        return playerCreated;
     }
 }

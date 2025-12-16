@@ -50,13 +50,13 @@ public class Level3Template implements LevelTemplate {
     
     @Override
     public String getName() {
-        return "Nivel 3 - Difícil";
+        return "Nivel 3";
     }
     
     @Override
     public String getDescription() {
         return """
-               Nivel 3 - Difícil
+               Nivel 3
                
                Oleadas:
                1. 4 Bananos (100 pts c/u) = 400 pts
@@ -67,7 +67,9 @@ public class Level3Template implements LevelTemplate {
                • 2 Macetas
                
                Obstáculos:
-               • Laberinto complejo de hielo
+               • 24 Bloques de hielo
+               • 4 Bloques de fogata 
+               • 4 Bloques calientes
                
                Puntaje máximo: 800 puntos
                Tiempo límite: 3 minutos

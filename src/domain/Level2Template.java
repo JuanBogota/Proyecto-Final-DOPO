@@ -36,20 +36,19 @@ public class Level2Template implements LevelTemplate {
         
         // Más obstáculos
         builder.addHorizontalIceBlocks(8, 16, 5)
-               .addHorizontalIceBlocks(8, 16, 9)
                .addVerticalIceBlocks(10, 3, 11)
                .addVerticalIceBlocks(14, 3, 11);
     }
     
     @Override
     public String getName() {
-        return "Nivel 2 - Medio";
+        return "Nivel 2";
     }
     
     @Override
     public String getDescription() {
         return """
-               Nivel 2 - Medio
+               Nivel 2
                
                Oleadas:
                1. 4 Bananos (100 pts c/u) = 400 pts
@@ -60,7 +59,7 @@ public class Level2Template implements LevelTemplate {
                • 1 Maceta
                
                Obstáculos:
-               • Laberinto de bloques de hielo
+               • 25 bloques de hielo
                
                Puntaje máximo: 700 puntos
                Tiempo límite: 3 minutos

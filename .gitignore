@@ -10,6 +10,9 @@
 package.bluej
 bluej.pkg
 
+#Documentos
+*.doc
+*.docx
 
 # Astah
 *.bak

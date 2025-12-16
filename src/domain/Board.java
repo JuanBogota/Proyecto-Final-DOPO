@@ -128,7 +128,6 @@ public class Board {
             }
         }
         return false;
-        // gameObject puede decir si puede crear algo o no (encima del bloque de hielo). intentar quitar instance of
     }
     
     /**
@@ -192,7 +191,12 @@ public class Board {
             
             IceBlock newBlock = new IceBlock(current, true);
             addObject(newBlock);
-            createdBlocks.add(newBlock);
+            
+            if(hasHotTileAt(current)){
+                removeObject(newBlock);
+            } else {
+                createdBlocks.add(newBlock);
+            }
             
             current = current.move(direction);
         }
@@ -231,5 +235,19 @@ public class Board {
         }
         
         return brokenBlocks;
+    }
+
+
+    /**
+     * Verifica si hay una loseta caliente en una posición
+     */
+    public boolean hasHotTileAt(Position position) {
+        List<GameObject> objects = getObjectsAt(position);
+        for (GameObject obj : objects) {
+            if (obj instanceof HotTile) {
+                return true;
+            }
+        }
+        return false;
     }
 }
