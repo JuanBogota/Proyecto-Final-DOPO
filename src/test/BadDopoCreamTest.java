@@ -59,9 +59,9 @@ public class BadDopoCreamTest {
         assertEquals(3, game.getAvailableLevels().size());
         
         // Verificar que los niveles son los correctos
-        assertEquals("Nivel 1 - Fácil", game.getLevelTemplate(0).getName());
-        assertEquals("Nivel 2 - Medio", game.getLevelTemplate(1).getName());
-        assertEquals("Nivel 3 - Difícil", game.getLevelTemplate(2).getName());
+        assertEquals("Nivel 1", game.getLevelTemplate(0).getName());
+        assertEquals("Nivel 2", game.getLevelTemplate(1).getName());
+        assertEquals("Nivel 3", game.getLevelTemplate(2).getName());
     }
     
     /**
@@ -495,7 +495,7 @@ public class BadDopoCreamTest {
         assertNotNull(template);
         
         // Verificar propiedades del template
-        assertEquals("Nivel 1 - Fácil", template.getName());
+        assertEquals("Nivel 1", template.getName());
         assertEquals(1, template.getLevelNumber());
         assertEquals(Difficulty.EASY, template.getDifficulty());
         assertNotNull(template.getDescription());
