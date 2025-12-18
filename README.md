@@ -2,8 +2,7 @@
 
 Repositorio correspondiente al **Proyecto Final** de la asignatura **Desarrollo Orientado por Objetos (DOPO)**, desarrollado durante el semestre **2025-2** en el programa de **Ingeniería de Sistemas** de la Escuela Colombiana de Ingeniería Julio Garavito.
 
-El proyecto consiste en el desarrollo de **Bad DOPO Cream**, una adaptación y extensión del videojuego **Bad Ice Cream**, en la cual se integran múltiples modalidades de juego, inteligencia artificial para jugadores controlados por máquina, diseño extensible y una arquitectura orientada a objetos.
-
+El proyecto consiste en el desarrollo de **Bad DOPO Cream**, una adaptación y extensión del videojuego **Bad Ice Cream**.
 ---
 
 ## 📚 Información académica
