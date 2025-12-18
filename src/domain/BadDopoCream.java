@@ -1,5 +1,8 @@
 package domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Clase principal que gestiona el juego.
  * Coordina el flujo del juego y sus estados.
@@ -14,6 +17,7 @@ public class BadDopoCream {
     private int currentLevelNumber;
     private long lastUpdateTime;
     private long lastSecondTime;
+    private List<LevelTemplate> availableLevels;
     
     /**
      * Constructor de la clase BadDopoCream.
@@ -23,12 +27,71 @@ public class BadDopoCream {
         this.currentLevelNumber = 1;
         this.lastUpdateTime = 0;
         this.lastSecondTime = 0;
+        initializeAvailableLevels();
     }
     
     /**
-     * Inicia el juego con una configuración de nivel
+     * Inicializa los niveles disponibles.
      */
-    public void startGame(LevelConfiguration config) {
+    private void initializeAvailableLevels() {
+        availableLevels = new ArrayList<>();
+        availableLevels.add(new Level1Template());
+        availableLevels.add(new Level2Template());
+        availableLevels.add(new Level3Template());
+    }
+    
+    /**
+     * Obtiene la lista de templates de niveles disponibles
+     * @return Lista de templates de niveles
+     */
+    public List<LevelTemplate> getAvailableLevels() {
+        return new ArrayList<>(availableLevels);
+    }
+    
+    /**
+     * Obtiene un template de nivel específico
+     * @param levelIndex Índice del nivel (0 para nivel 1, 1 para nivel 2, etc.)
+     * @return El template del nivel o null si no existe
+     */
+    public LevelTemplate getLevelTemplate(int levelIndex) {
+        if (levelIndex >= 0 && levelIndex < availableLevels.size()) {
+            return availableLevels.get(levelIndex);
+        }
+        return null;
+    }
+    
+    /**
+     * Crea la configuración de un nivel usando su template
+     * @param levelIndex Índice del nivel
+     * @return La configuración del nivel
+     */
+    public LevelConfiguration createLevelConfiguration(int levelIndex) {
+        LevelTemplate template = getLevelTemplate(levelIndex);
+        if (template == null) {
+            return null;
+        }
+        
+        LevelBuilder builder = new LevelBuilder();
+        template.configure(builder);
+        return builder.build();
+    }
+    
+    /**
+     * Inicia el juego con un nivel específico
+     * @param levelIndex Índice del nivel
+     */
+    public void startGame(int levelIndex) {
+        LevelConfiguration config = createLevelConfiguration(levelIndex);
+        if (config != null) {
+            startGameWithConfiguration(config);
+            currentLevelNumber = levelIndex + 1;
+        }
+    }
+    
+    /**
+     * Inicia el juego con una configuración de nivel específica
+     */
+    public void startGameWithConfiguration(LevelConfiguration config) {
         currentLevel = new Level(currentLevelNumber, 25, 15, 180); // 25x15, 3 minutos
         currentLevel.initialize(config);
         state = GameState.PLAYING;
@@ -46,19 +109,19 @@ public class BadDopoCream {
         
         long currentTime = System.currentTimeMillis();
         
-        // Actualiza el nivel cada cierto intervalo (100ms)
-        if (currentTime - lastUpdateTime >= 100) {
+        // Intervalo para la velocidad del juego, lo subimos a 400ms y entre 1000ms 
+        if (currentTime - lastUpdateTime >= 400) {
             currentLevel.update();
             lastUpdateTime = currentTime;
         }
         
-        // Decrementa el tiempo cada segundo
+        
         if (currentTime - lastSecondTime >= 1000) {
             currentLevel.decrementTime();
             lastSecondTime = currentTime;
         }
         
-        // Verifica condiciones de victoria/derrota
+        
         checkGameState();
     }
     
@@ -74,7 +137,7 @@ public class BadDopoCream {
     }
     
     /**
-     * Mueve un helado en una dirección específica
+     * Mueve un helado en una dirección especí­fica
      */
     public boolean moveIceCream(IceCream iceCream, Direction direction) {
         if (state != GameState.PLAYING || !iceCream.isAlive()) {
@@ -84,20 +147,26 @@ public class BadDopoCream {
     }
     
     /**
-     * Crea bloques de hielo con un helado específico
+     * Crea bloques de hielo con un helado especí­fico
      */
     public void createIceBlocks(IceCream iceCream) {
         if (state == GameState.PLAYING && iceCream.isAlive()) {
-            iceCream.createIceBlocks(currentLevel.getBoard());
+            currentLevel.getBoard().createIceBlocks(
+                iceCream.getPosition(), 
+                iceCream.getFacingDirection()
+            );
         }
     }
     
     /**
-     * Rompe bloques de hielo con un helado específico
+     * Rompe bloques de hielo con un helado especí­fico
      */
     public void breakIceBlocks(IceCream iceCream) {
         if (state == GameState.PLAYING && iceCream.isAlive()) {
-            iceCream.breakIceBlocks(currentLevel.getBoard());
+            currentLevel.getBoard().breakIceBlocks(
+                iceCream.getPosition(), 
+                iceCream.getFacingDirection()
+            );
         }
     }
     
@@ -124,8 +193,8 @@ public class BadDopoCream {
     /**
      * Reinicia el nivel actual
      */
-    public void restartLevel(LevelConfiguration config) {
-        startGame(config);
+    public void restartLevel(int levelIndex) {
+        startGame(levelIndex);
     }
     
     /**

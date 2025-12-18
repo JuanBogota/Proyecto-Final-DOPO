@@ -1,11 +1,11 @@
 package presentation;
 
-import domain.LevelConfiguration;
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
 
 /**
  * Ventana principal del juego Bad DOPO Cream.
+ * Corrección de la profe --> Solo depende de GameState de dominio.
  * 
  * @author Juan Daniel Bogotá Fuentes
  * @author Nicolás Felipe Bernal Gallo
@@ -15,7 +15,7 @@ public class MainWindow extends JFrame {
     private GamePanel gamePanel;
     private InfoPanel infoPanel;
     private GameController controller;
-    private LevelConfiguration currentConfig;
+    private int currentLevelIndex = -1;
     
     /**
      * Constructor de la ventana principal
@@ -42,11 +42,12 @@ public class MainWindow extends JFrame {
         
         // Panel de juego
         gamePanel = new GamePanel();
+        gamePanel.setMainWindow(this);
         gamePanel.setFocusable(true);
         gamePanel.addKeyListener(controller);
         add(gamePanel, BorderLayout.CENTER);
         
-        // Panel de información
+        // Panel de informaciónn
         infoPanel = new InfoPanel();
         infoPanel.setPreferredSize(new Dimension(200, 480));
         add(infoPanel, BorderLayout.EAST);
@@ -63,6 +64,13 @@ public class MainWindow extends JFrame {
         add(bottomPanel, BorderLayout.SOUTH);
     }
     
+    /**
+     * Inicia un nuevo juego desde el panel (llamado al hacer click en START)
+     */
+    public void startNewGameFromPanel() {
+        startNewGame();
+    }
+
     /**
      * Crea la barra de menú
      */
@@ -103,12 +111,12 @@ public class MainWindow extends JFrame {
      * Inicia un nuevo juego
      */
     private void startNewGame() {
-        ConfigDialog dialog = new ConfigDialog(this);
-        LevelConfiguration config = dialog.showDialog();
+        ConfigDialog dialog = new ConfigDialog(this, controller.getGame());
+        int levelIndex = dialog.showDialog();
         
-        if (config != null) {
-            currentConfig = config;
-            controller.startNewGame(config);
+        if (levelIndex >= 0) {
+            currentLevelIndex = levelIndex;
+            controller.startNewGame(levelIndex);
             gamePanel.requestFocusInWindow();
         }
     }
@@ -117,7 +125,7 @@ public class MainWindow extends JFrame {
      * Reinicia el nivel actual
      */
     private void restartLevel() {
-        if (currentConfig != null) {
+        if (currentLevelIndex >= 0) {
             int response = JOptionPane.showConfirmDialog(
                 this,
                 "¿Deseas reiniciar el nivel actual?",
@@ -126,7 +134,7 @@ public class MainWindow extends JFrame {
             );
             
             if (response == JOptionPane.YES_OPTION) {
-                controller.restartLevel(currentConfig);
+                controller.restartLevel(currentLevelIndex);
                 gamePanel.requestFocusInWindow();
             }
         } else {

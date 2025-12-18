@@ -1,10 +1,15 @@
 package presentation;
 
 import domain.*;
-import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import javax.imageio.ImageIO;
+import javax.swing.*;
 
 /**
  * Panel donde se dibuja el tablero del juego.
@@ -17,6 +22,8 @@ public class GamePanel extends JPanel {
     private Level level;
     private static final int CELL_SIZE = 32; // Tamaño de cada celda en píxeles
     private Map<String, Color> colorMap;
+    private BufferedImage startScreenImage;
+    private MainWindow mainWindow;
     
     /**
      * Constructor del panel de juego
@@ -25,6 +32,75 @@ public class GamePanel extends JPanel {
         setBackground(new Color(240, 248, 255)); // Color de fondo azul claro
         setPreferredSize(new Dimension(800, 480));
         initializeColorMap();
+        loadStartScreen();
+        setupMouseListener();
+    }
+    
+    /**
+     * Establece la ventana principal
+     */
+    public void setMainWindow(MainWindow mainWindow) {
+        this.mainWindow = mainWindow;
+    }
+    
+    /**
+     * Carga la imagen de la pantalla de inicio
+     */
+    private void loadStartScreen() {
+        try {
+            // Usar ruta absoluta del proyecto
+            File imageFile = new File("resources/images/start_screen.png");
+            
+            if (!imageFile.exists()) {
+                // Intentar ruta alternativa
+                imageFile = new File("src/resources/images/start_screen.png");
+            }
+            
+            if (imageFile.exists()) {
+                startScreenImage = ImageIO.read(imageFile);
+                System.out.println("Imagen cargada exitosamente desde: " + imageFile.getAbsolutePath());
+            } else {
+                System.err.println("No se encontró la imagen en: " + imageFile.getAbsolutePath());
+                startScreenImage = null;
+            }
+            
+        } catch (Exception e) {
+            System.err.println("Error cargando imagen de inicio: " + e.getMessage());
+            e.printStackTrace();
+            startScreenImage = null;
+        }
+    }
+    
+    /**
+     * Configura el listener del mouse para detectar clicks en el botón START
+     */
+    private void setupMouseListener() {
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (level == null && startScreenImage != null) {
+                    // Calcular área del botón START
+                    // La imagen tiene el botón START en la parte inferior central
+                    int imgWidth = Math.min(startScreenImage.getWidth(), getWidth());
+                    int imgHeight = Math.min(startScreenImage.getHeight(), getHeight());
+                    int x = (getWidth() - imgWidth) / 2;
+                    int y = (getHeight() - imgHeight) / 2;
+                    
+                    // Área aproximada del botón START
+                    int buttonX = x + imgWidth / 2 - 100;
+                    int buttonY = y + imgHeight - 100;
+                    int buttonWidth = 200;
+                    int buttonHeight = 60;
+                    
+                    if (e.getX() >= buttonX && e.getX() <= buttonX + buttonWidth &&
+                        e.getY() >= buttonY && e.getY() <= buttonY + buttonHeight) {
+                        if (mainWindow != null) {
+                            mainWindow.startNewGameFromPanel();
+                        }
+                    }
+                }
+            }
+        });
     }
     
     /**
@@ -48,6 +124,8 @@ public class GamePanel extends JPanel {
         
         // Obstáculos
         colorMap.put("ICE_BLOCK", new Color(173, 216, 230));
+        colorMap.put("BONFIRE", new Color(255, 69, 0));
+        colorMap.put("HOT_TILE", new Color(200, 20, 60));
     }
     
     /**
@@ -88,22 +166,45 @@ public class GamePanel extends JPanel {
      * Dibuja la pantalla de bienvenida
      */
     private void drawWelcomeScreen(Graphics g) {
-        g.setColor(new Color(100, 150, 255));
-        g.setFont(new Font("Arial", Font.BOLD, 36));
-        
-        String title = "BAD DOPO CREAM";
-        FontMetrics fm = g.getFontMetrics();
-        int x = (getWidth() - fm.stringWidth(title)) / 2;
-        int y = getHeight() / 2;
-        
-        g.drawString(title, x, y);
-        
-        g.setFont(new Font("Arial", Font.PLAIN, 18));
-        String instruction = "Presiona 'Nuevo Juego' para comenzar";
-        fm = g.getFontMetrics();
-        x = (getWidth() - fm.stringWidth(instruction)) / 2;
-        
-        g.drawString(instruction, x, y + 50);
+        if (startScreenImage != null) {
+            // Calcular dimensiones para centrar la imagen
+            int imgWidth = startScreenImage.getWidth();
+            int imgHeight = startScreenImage.getHeight();
+            
+            // Escalar la imagen si es necesario para que quepa en el panel
+            double scale = Math.min(
+                (double) getWidth() / imgWidth,
+                (double) getHeight() / imgHeight
+            );
+            
+            int scaledWidth = (int) (imgWidth * scale);
+            int scaledHeight = (int) (imgHeight * scale);
+            
+            int x = (getWidth() - scaledWidth) / 2;
+            int y = (getHeight() - scaledHeight) / 2;
+            
+            g.drawImage(startScreenImage, x, y, scaledWidth, scaledHeight, this);
+
+            System.out.println("Dibujando imagen en pantalla");
+        } else {
+            // Fallback si no se pudo cargar la imagen
+            g.setColor(new Color(100, 150, 255));
+            g.setFont(new Font("Arial", Font.BOLD, 36));
+            
+            String title = "BAD DOPO CREAM";
+            FontMetrics fm = g.getFontMetrics();
+            int x = (getWidth() - fm.stringWidth(title)) / 2;
+            int y = getHeight() / 2;
+            
+            g.drawString(title, x, y);
+            
+            g.setFont(new Font("Arial", Font.PLAIN, 18));
+            String instruction = "Presiona 'Nuevo Juego' para comenzar";
+            fm = g.getFontMetrics();
+            x = (getWidth() - fm.stringWidth(instruction)) / 2;
+            
+            g.drawString(instruction, x, y + 50);
+        }
     }
     
     /**
@@ -140,6 +241,10 @@ public class GamePanel extends JPanel {
             drawEnemy(g2d, obj, x, y, color);
         } else if (obj instanceof IceBlock) {
             drawIceBlock(g2d, x, y, color);
+        } else if (obj instanceof Bonfire) {
+            drawBonfire(g2d, x, y, color);
+        } else if (obj instanceof HotTile) {
+            drawHotTile(g2d, x, y, color);
         }
     }
     
@@ -212,7 +317,7 @@ public class GamePanel extends JPanel {
      */
     private void drawFruit(Graphics2D g2d, Fruit fruit, int x, int y, Color color) {
         if (fruit.isCollected()) {
-            return; // No dibujar frutas recolectadas
+            return;
         }
         
         g2d.setColor(color);
@@ -222,12 +327,12 @@ public class GamePanel extends JPanel {
         
         // Dibuja detalles específicos según el tipo
         if (fruit instanceof Grape) {
-            // Uvas con pequeños círculos
+            // uva 
             g2d.setColor(color.darker());
             g2d.fillOval(x + CELL_SIZE/3, y + CELL_SIZE/3 - 3, 6, 6);
             g2d.fillOval(x + CELL_SIZE/2, y + CELL_SIZE/3 - 3, 6, 6);
         } else if (fruit instanceof Banana) {
-            // Plátano con forma curva
+            // Platano
             g2d.setColor(color.darker());
             g2d.drawArc(x + CELL_SIZE/4, y + CELL_SIZE/4, CELL_SIZE/2, CELL_SIZE/2, 45, 270);
         }
@@ -257,17 +362,50 @@ public class GamePanel extends JPanel {
      * Dibuja un bloque de hielo
      */
     private void drawIceBlock(Graphics2D g2d, int x, int y, Color color) {
-        // Bloque con efecto de hielo
+        
         g2d.setColor(color);
         g2d.fillRect(x + 2, y + 2, CELL_SIZE - 4, CELL_SIZE - 4);
         
-        // Borde más oscuro
+        //Bordeeee
+        g2d.setColor(color.darker());
+        g2d.drawRect(x + 2, y + 2, CELL_SIZE - 4, CELL_SIZE - 4);
+    }
+
+    /**
+     * Dibuja una fogata
+     */
+    private void drawBonfire(Graphics2D g2d, int x, int y, Color color) {
+        // Base de la fogata
+        g2d.setColor(new Color(139, 69, 19)); // Marrón oscuro
+        g2d.fillOval(x + CELL_SIZE/4, y + CELL_SIZE - 10, CELL_SIZE/2, 10);
+        
+        // Llamas
+        g2d.setColor(color);
+        int[] xPoints = {x + CELL_SIZE/2, x + CELL_SIZE/3, x + 2*CELL_SIZE/3};
+        int[] yPoints = {y + 5, y + CELL_SIZE - 10, y + CELL_SIZE - 10};
+        g2d.fillPolygon(xPoints, yPoints, 3);
+        
+        g2d.setColor(Color.ORANGE);
+        int[] xPoints2 = {x + CELL_SIZE/2, x + CELL_SIZE/3 + 5, x + 2*CELL_SIZE/3 - 5};
+        int[] yPoints2 = {y + 10, y + CELL_SIZE - 10, y + CELL_SIZE - 10};
+        g2d.fillPolygon(xPoints2, yPoints2, 3);
+    }
+
+    /**
+     * Dibuja una losa caliente
+     */
+    private void drawHotTile(Graphics2D g2d, int x, int y, Color color) {
+        g2d.setColor(color);
+        g2d.fillRect(x + 2, y + 2, CELL_SIZE - 4, CELL_SIZE - 4);
+        
+        // Bordes
         g2d.setColor(color.darker());
         g2d.drawRect(x + 2, y + 2, CELL_SIZE - 4, CELL_SIZE - 4);
         
-        // Efecto de brillo
-        g2d.setColor(Color.WHITE);
-        g2d.drawLine(x + 4, y + 4, x + CELL_SIZE/2, y + 4);
-        g2d.drawLine(x + 4, y + 4, x + 4, y + CELL_SIZE/2);
+        // Dibuja líneas onduladas para indicar calor
+        g2d.setColor(Color.RED);
+        for (int i = 0; i < CELL_SIZE; i += 6) {
+            g2d.drawArc(x + i, y + CELL_SIZE/4, 6, 12, 0, 180);
+        }
     }
 }

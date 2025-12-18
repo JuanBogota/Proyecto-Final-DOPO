@@ -1,8 +1,5 @@
 package domain;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Clase abstracta para los helados del juego.
  * Gestiona el comportamiento común de todos los helados.
@@ -51,56 +48,6 @@ public abstract class IceCream extends GameObject implements Movable {
     @Override
     public void setFacingDirection(Direction direction) {
         this.facingDirection = direction;
-    }
-    
-    /**
-     * Crea una línea de bloques de hielo en la dirección que está mirando
-     */
-    public List<IceBlock> createIceBlocks(Board board) {
-        List<IceBlock> createdBlocks = new ArrayList<>();
-        Position current = position.move(facingDirection);
-        
-        while (board.isValidPosition(current)) {
-        
-            if (board.hasIceBlockAt(current)) {
-                break;
-            }
-            
-            if (board.isSolidAt(current)) {
-                break;
-            }
-            
-            IceBlock newBlock = new IceBlock(current, true); // true = creado por jugador
-            board.addObject(newBlock);
-            createdBlocks.add(newBlock);
-            
-            current = current.move(facingDirection);
-        }
-        
-        return createdBlocks;
-    }
-    
-    /**
-     * Rompe bloques de hielo en efecto dominó en la dirección que está mirando
-     */
-    public List<IceBlock> breakIceBlocks(Board board) {
-        List<IceBlock> brokenBlocks = new ArrayList<>();
-        Position current = position.move(facingDirection);
-        
-        while (board.isValidPosition(current) && board.hasIceBlockAt(current)) {
-            List<GameObject> objects = board.getObjectsAt(current);
-            
-            for (GameObject obj : objects) {
-                if (obj instanceof IceBlock iceBlock) {
-                    board.removeObject(obj);
-                    brokenBlocks.add(iceBlock);
-                }
-            }
-            
-            current = current.move(facingDirection);
-        }
-        
-        return brokenBlocks;
     }
     
     /**

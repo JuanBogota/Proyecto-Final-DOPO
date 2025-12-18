@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * Representa un nivel del juego.
- * Gestiona la configuración y estado de un nivel.
+ * Gestiona la configuración, estado y oleadas de frutas de un nivel.
  * 
  * @author Juan Daniel Bogotá Fuentes
  * @author Nicolás Felipe Bernal Gallo
@@ -17,15 +17,17 @@ public class Level {
     private final int timeLimit; // en segundos
     private int timeRemaining;
     private boolean completed;
-    private List<Fruit> totalFruits;
-    private int fruitsToCollect;
+    private List<List<Fruit>> fruitWaves; // Todas las oleadas
+    private int currentWaveIndex; // Índice de la oleada actual
+    private List<Fruit> activeFruits; // Frutas activas en el tablero
+    private int totalFruitsToCollect;
     
     /**
-     * Constructor del nivel con parámetros específicos.
+     * Constructor del nivel con parámetros especí­ficos.
      * @param levelNumber Número del nivel.
      * @param width Ancho del tablero.
      * @param height Altura del tablero.
-     * @param timeLimit Límite de tiempo en segundos.
+     * @param timeLimit Lí­mite de tiempo en segundos.
      */
     public Level(int levelNumber, int width, int height, int timeLimit) {
         this.levelNumber = levelNumber;
@@ -33,36 +35,71 @@ public class Level {
         this.timeLimit = timeLimit;
         this.timeRemaining = timeLimit;
         this.completed = false;
-        this.totalFruits = new ArrayList<>();
-        this.fruitsToCollect = 0;
+        this.fruitWaves = new ArrayList<>();
+        this.currentWaveIndex = 0;
+        this.activeFruits = new ArrayList<>();
+        this.totalFruitsToCollect = 0;
     }
     
     /**
-     * Inicializa el nivel con helados, frutas, enemigos y obstáculos
+     * Inicializa el nivel con helados, frutas (por oleadas), enemigos y obstáculos
      */
     public void initialize(LevelConfiguration config) {
-        
+        // Agregar helados
         for (IceCream iceCream : config.getIceCreams()) {
             board.addObject(iceCream);
         }
         
-        for (Fruit fruit : config.getFruits()) {
-            board.addObject(fruit);
-            totalFruits.add(fruit);
-        }
-        fruitsToCollect = totalFruits.size();
+        // Guardar todas las oleadas de frutas, cambios de la ultima sustentacion
+        this.fruitWaves = config.getFruitWaves();
         
+        // Calcular total de frutas a recolectar
+        for (List<Fruit> wave : fruitWaves) {
+            totalFruitsToCollect += wave.size();
+        }
+        
+        // Activar la primera oleada
+        activateNextWave();
+        
+        // Agregar enemigos
         for (Enemy enemy : config.getEnemies()) {
             board.addObject(enemy);
         }
         
-        for (IceBlock obstacle : config.getObstacles()) {
+        // Agregar obstáculos del nivel (estos NO se pueden romper)
+        for (Obstacle obstacle : config.getObstacles()) {
             board.addObject(obstacle);
         }
     }
     
     /**
-     * Actualiza el estado del nivel (llamado en cada tick del juego)
+     * Activa la siguiente oleada de frutas
+     */
+    private void activateNextWave() {
+        if (currentWaveIndex < fruitWaves.size()) {
+            List<Fruit> nextWave = fruitWaves.get(currentWaveIndex);
+            for (Fruit fruit : nextWave) {
+                board.addObject(fruit);
+                activeFruits.add(fruit);
+            }
+            currentWaveIndex++;
+        }
+    }
+    
+    /**
+     * Verifica si la oleada actual está completa
+     */
+    private boolean isCurrentWaveComplete() {
+        for (Fruit fruit : activeFruits) {
+            if (!fruit.isCollected()) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    /**
+     * Actualiza el estado del nivel
      */
     public void update() {
         if (completed) {
@@ -75,6 +112,10 @@ public class Level {
         }
         
         checkCollectibles();
+        
+        if (isCurrentWaveComplete() && currentWaveIndex < fruitWaves.size()) {
+            activateNextWave();
+        }
         
         checkLevelCompletion();
     }
@@ -106,20 +147,15 @@ public class Level {
      * Verifica si el nivel ha sido completado
      */
     private void checkLevelCompletion() {
-        int collectedFruits = 0;
-        for (Fruit fruit : totalFruits) {
-            if (fruit.isCollected()) {
-                collectedFruits++;
-            }
-        }
+        int collectedFruits = getCollectedFruits();
         
-        if (collectedFruits >= fruitsToCollect) {
+        if (collectedFruits >= totalFruitsToCollect) {
             completed = true;
         }
     }
     
     /**
-     * Decrementa el tiempo restante (llamar cada segundo)
+     * Decrementa el tiempo restante
      */
     public void decrementTime() {
         if (timeRemaining > 0) {
@@ -145,7 +181,6 @@ public class Level {
      * Indica si el jugador ha perdido
      */
     public boolean hasLost() {
-        // Pierde si se acabó el tiempo o todos los helados están muertos
         boolean allDead = true;
         for (IceCream iceCream : board.getIceCreams()) {
             if (iceCream.isAlive()) {
@@ -182,9 +217,11 @@ public class Level {
      */
     public int getCollectedFruits() {
         int collected = 0;
-        for (Fruit fruit : totalFruits) {
-            if (fruit.isCollected()) {
-                collected++;
+        for (List<Fruit> wave : fruitWaves) {
+            for (Fruit fruit : wave) {
+                if (fruit.isCollected()) {
+                    collected++;
+                }
             }
         }
         return collected;
@@ -194,7 +231,7 @@ public class Level {
      * Obtiene la cantidad total de frutas en el nivel
      */
     public int getTotalFruits() {
-        return fruitsToCollect;
+        return totalFruitsToCollect;
     }
     
     /**
@@ -203,7 +240,7 @@ public class Level {
     public void reset() {
         timeRemaining = timeLimit;
         completed = false;
-        // Nota: Se necesitaría recrear el tablero con la configuración original
+        // Nota: Se necesitarí­a recrear el tablero con la configuración original
         // Esto se puede manejar desde la clase Game
     }
 }

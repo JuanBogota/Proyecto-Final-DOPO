@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * Clase que representa el tablero del juego.
- * Gestiona la cuadrícula del juego y los objetos en ella.
+ * Gestiona la cuadrí­cula del juego y los objetos en ella.
  * 
  * @author Juan Daniel Bogotá Fuentes
  * @author Nicolás Felipe Bernal Gallo
@@ -18,7 +18,7 @@ public class Board {
     private List<IceCream> iceCreams;
     
     /**
-     * Constructor del tablero con dimensiones específicas.
+     * Constructor del tablero con dimensiones especí­ficas.
      * @param width Ancho del tablero.
      * @param height Altura del tablero.
      */
@@ -50,7 +50,7 @@ public class Board {
     }
     
     /**
-     * Verifica si una posición está dentro de los límites del tablero
+     * Verifica si una posición está dentro de los lí­mites del tablero
      */
     public boolean isValidPosition(Position position) {
         return position.getX() >= 0 && position.getX() < width &&
@@ -58,7 +58,7 @@ public class Board {
     }
     
     /**
-     * Agrega un objeto al tablero en una posición específica
+     * Agrega un objeto al tablero en una posición especí­fica
      */
     public void addObject(GameObject object) {
         Position pos = object.getPosition();
@@ -95,7 +95,7 @@ public class Board {
     }
     
     /**
-     * Obtiene todos los objetos en una posición específica
+     * Obtiene todos los objetos en una posición especí­fica
      */
     public List<GameObject> getObjectsAt(Position position) {
         if (!isValidPosition(position)) {
@@ -168,5 +168,86 @@ public class Board {
             }
         }
         return allObjects;
+    }
+    
+    /**
+     * Crea una línea de bloques de hielo en una dirección desde una posición
+     * @param startPosition Posición inicial
+     * @param direction Dirección en la que crear los bloques
+     * @return Lista de bloques creados
+     */
+    public List<IceBlock> createIceBlocks(Position startPosition, Direction direction) {
+        List<IceBlock> createdBlocks = new ArrayList<>();
+        Position current = startPosition.move(direction);
+        
+        while (isValidPosition(current)) {
+            if (hasIceBlockAt(current)) {
+                break;
+            }
+            
+            if (isSolidAt(current)) {
+                break;
+            }
+            
+            IceBlock newBlock = new IceBlock(current, true);
+            addObject(newBlock);
+            
+            if(hasHotTileAt(current)){
+                removeObject(newBlock);
+            } else {
+                createdBlocks.add(newBlock);
+            }
+            
+            current = current.move(direction);
+        }
+        
+        return createdBlocks;
+    }
+    
+    /**
+     * Rompe bloques de hielo en efecto dominó en una dirección
+     * Solo rompe bloques creados por el jugador
+     * @param startPosition Posición inicial
+     * @param direction Dirección en la que romper bloques
+     * @return Lista de bloques rotos
+     */
+    public List<IceBlock> breakIceBlocks(Position startPosition, Direction direction) {
+        List<IceBlock> brokenBlocks = new ArrayList<>();
+        Position current = startPosition.move(direction);
+        
+        while (isValidPosition(current) && hasIceBlockAt(current)) {
+            List<GameObject> objects = getObjectsAt(current);
+            
+            for (GameObject obj : objects) {
+                if (obj instanceof IceBlock iceBlock) {
+                    // SOLO romper bloques creados por el jugador, cambio marcado por la profe
+                    if (iceBlock.isPlayerCreated()) {
+                        removeObject(obj);
+                        brokenBlocks.add(iceBlock);
+                    } else {
+                        // Si encontramos un bloque del nivel, no detruye 
+                        return brokenBlocks;
+                    }
+                }
+            }
+            
+            current = current.move(direction);
+        }
+        
+        return brokenBlocks;
+    }
+
+
+    /**
+     * Verifica si hay una loseta caliente en una posición
+     */
+    public boolean hasHotTileAt(Position position) {
+        List<GameObject> objects = getObjectsAt(position);
+        for (GameObject obj : objects) {
+            if (obj instanceof HotTile) {
+                return true;
+            }
+        }
+        return false;
     }
 }
